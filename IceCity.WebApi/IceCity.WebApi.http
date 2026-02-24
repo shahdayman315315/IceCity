@@ -1,0 +1,6 @@
+@IceCity.WebApi_HostAddress = http://localhost:5278
+
+GET {{IceCity.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
