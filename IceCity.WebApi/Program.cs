@@ -1,10 +1,14 @@
 
+using IceCity.Application.Helpers;
 using IceCity.Application.Interfaces;
 using IceCity.Application.Services;
 using IceCity.Domain.Interfaces;
 using IceCity.Infrastructure.Data;
 using IceCity.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IceCity.WebApi
 {
@@ -20,9 +24,32 @@ namespace IceCity.WebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));  
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<ICostCalculationService, CostCalculationService>();
+            builder.Services.AddScoped<IPasswordService, PasswordService>();
+
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -38,6 +65,7 @@ namespace IceCity.WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

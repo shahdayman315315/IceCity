@@ -15,6 +15,8 @@ namespace IceCity.Domain.Interfaces
         IBaseRepository<Heater> Heaters { get; }
         IBaseRepository<MonthlyCostReport> MonthlyCostReports { get; }
         IBaseRepository<SensorReading> SensorReadings { get; }
+        IBaseRepository<User> Users { get; }
+        IBaseRepository<RefreshToken> RefreshTokens { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

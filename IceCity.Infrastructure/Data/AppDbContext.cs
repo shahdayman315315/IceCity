@@ -17,6 +17,8 @@ namespace IceCity.Infrastructure.Data
         public DbSet<SensorReading> SensorReadings { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<MonthlyCostReport> MonthlyCostReports { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +38,9 @@ namespace IceCity.Infrastructure.Data
 
             modelBuilder.Entity<Heater>().HasMany(h => h.SensorReadings).WithOne(r => r.Heater).
                 HasForeignKey(r => r.HeaterId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>().HasMany(u => u.RefreshTokens).WithOne(rt => rt.User)
+                .HasForeignKey(rf => rf.UserId) .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

@@ -19,6 +19,8 @@ namespace IceCity.Infrastructure.Repositories
         private Lazy<IBaseRepository<Heater>> _heaters;
         private Lazy<IBaseRepository<MonthlyCostReport>> _monthlyCostReports;
         private Lazy<IBaseRepository<SensorReading>> _sensorReadings;
+        private Lazy<IBaseRepository<User>> _users;
+        private Lazy<IBaseRepository<RefreshToken>> _refreshTokens;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -28,7 +30,8 @@ namespace IceCity.Infrastructure.Repositories
             _heaters = CreateRepository<IBaseRepository<Heater>, BaseRepository<Heater>>();
             _monthlyCostReports = CreateRepository<IBaseRepository<MonthlyCostReport>, BaseRepository<MonthlyCostReport>>();
             _sensorReadings = CreateRepository<IBaseRepository<SensorReading>, BaseRepository<SensorReading>>();
-
+            _users = CreateRepository<IBaseRepository<User>, BaseRepository<User>>();
+            _refreshTokens=CreateRepository<IBaseRepository<RefreshToken>, BaseRepository<RefreshToken>>();
         }
 
         private Lazy<T1> CreateRepository<T1, T2>() where T1 : class where T2 : class
@@ -44,6 +47,8 @@ namespace IceCity.Infrastructure.Repositories
         public IBaseRepository<MonthlyCostReport> MonthlyCostReports => _monthlyCostReports.Value;
 
         public IBaseRepository<SensorReading> SensorReadings => _sensorReadings.Value;
+        public IBaseRepository<User> Users => _users.Value;
+        public IBaseRepository<RefreshToken> RefreshTokens => _refreshTokens.Value; 
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
