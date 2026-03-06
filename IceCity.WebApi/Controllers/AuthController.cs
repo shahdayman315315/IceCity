@@ -1,5 +1,6 @@
 ﻿using IceCity.Application.Dtos;
 using IceCity.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,8 +55,8 @@ namespace IceCity.WebApi.Controllers
          }
 
 
-        [HttpPost("refreshtoken")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDto dto)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDto? dto)
         {
             dto.RefreshToken = dto.RefreshToken ?? Request.Cookies["refreshToken"];
 
@@ -82,10 +83,11 @@ namespace IceCity.WebApi.Controllers
         }
 
 
-        [HttpPost("revoketoken")]
-        public async Task<IActionResult> RevokeToken(RefreshTokenDto dto)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeToken([FromBody]string? refreshToken)
         {
-            var token = dto.RefreshToken ?? Request.Cookies["refreshToken"];
+            var token = refreshToken ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
             {
@@ -104,9 +106,9 @@ namespace IceCity.WebApi.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout(RefreshTokenDto dto)
+        public async Task<IActionResult> Logout([FromBody] string? refreshToken)
         {
-            var token = dto.RefreshToken ?? Request.Cookies["refreshToken"];
+            var token = refreshToken ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
             {

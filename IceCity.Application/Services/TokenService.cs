@@ -46,7 +46,7 @@ namespace IceCity.Application.Services
                   new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+            var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey));
             var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken
@@ -71,7 +71,7 @@ namespace IceCity.Application.Services
                     ValidateAudience = true,
                     ValidateIssuer = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey)),
                     ValidateLifetime = false,
                     ValidIssuer = _jwt.Issuer,
                     ValidAudience = _jwt.Audience

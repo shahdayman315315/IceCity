@@ -1,4 +1,5 @@
 ﻿using IceCity.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace IceCity.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HousesController : ControllerBase
     {
         private readonly ICostCalculationService _costCalculationService;

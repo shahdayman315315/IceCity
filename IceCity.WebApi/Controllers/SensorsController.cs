@@ -2,6 +2,7 @@
 using IceCity.Application.Dtos;
 using IceCity.Domain.Interfaces;
 using IceCity.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace IceCity.WebApi.Controllers
             _mapper = mapper;
         }
 
-
+        [Authorize(Roles = "Admin,Operator")]
         [HttpPost("readings")]
         public async Task<IActionResult> EnterReadings(SensorReadingDto dto)
         {
